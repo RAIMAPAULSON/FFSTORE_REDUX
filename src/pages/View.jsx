@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToWishlist } from '../redux/Slices/wishlistSlice'
+import { addToWishlist} from '../redux/Slices/wishlistSlice'
+import { addToCart } from '../redux/Slices/cartSlice'
+
 const View = () => {
   const [product,setProduct] = useState({})
   const {id} = useParams()
   console.log(product);
   const userWishlist = useSelector(state=>state.wishlistReducer)
   console.log(userWishlist);
+  const cartList = useSelector(state=>state.cartReducer)
+  console.log("FGHJ",cartList)
   const dispatch = useDispatch()
   useEffect(()=>{
     if(localStorage.getItem("allProducts")){
@@ -22,6 +26,15 @@ const View = () => {
     }else{
       dispatch(addToWishlist(product))
     }
+  }
+   const handleCart=()=>{
+   const existingProduct = cartList?.find(item=>item.id==product.id)
+   if(existingProduct){
+    dispatch(addToCart(product))
+    alert("Existing product quantity is increasing!!!")
+   }else{
+    dispatch(addToCart(product))
+   }
   }
   return (
     <div>
@@ -40,7 +53,7 @@ const View = () => {
       {product?.description}</p>
       <div className="d-flex justify-content-between mt-3">
        <button onClick={handleWishlist} className='btn btn-outline-dark'><i className="fa-solid fa-heart text-danger me-1"></i>Add to wishlist</button>
-       <button className='btn btn-outline-dark'><i className="fa-solid fa-cart-plus text-success me-1"></i>Add to cart</button>
+       <button onClick={handleCart} className='btn btn-outline-dark'><i className="fa-solid fa-cart-plus text-success me-1"></i>Add to cart</button>
       </div>
     </div>
     </div>

@@ -7,7 +7,20 @@ import { addToCart } from '../redux/Slices/cartSlice'
 
 const Wishlist = () => {
   const yourWishlist = useSelector(state=>state.wishlistReducer)
+  const addCartItems = useSelector(state=>state.cartReducer)
   const dispatch = useDispatch()
+  const handleCartandRemove=(items)=>{
+    const existingProduct = addCartItems?.find(item=>item.id==items.id)
+   if(existingProduct){
+   dispatch(addToCart(items))
+   alert("Product quantity is incrementing!!!")
+   dispatch(removeWishlistItem(items.id))
+   }
+   else{
+    dispatch(addToCart(items))
+   dispatch(removeWishlistItem(items.id))
+   }
+  }
   return (
     <>
     <Header/>
@@ -17,15 +30,15 @@ const Wishlist = () => {
         <div>
         <h3 className='text-danger'>Your Wishlist</h3>
           <Row className='my-5'>
-                      {yourWishlist?.map(item=>(
-                        <Col key={item?.id} className='mb-5 me-2' sm={12} md={6} lg={4} xl={3}>
+                      {yourWishlist?.map(items=>(
+                        <Col key={items?.id} className='mb-5 me-2' sm={12} md={6} lg={4} xl={3}>
                           <Card className='shadow rounded' style={{ width: '18rem' }}>
-                              <Card.Img height={'180px'} variant="top" src={item?.thumbnail} />
+                              <Card.Img height={'180px'} variant="top" src={items?.thumbnail} />
                               <Card.Body>
-                                  <Card.Title>{item?.title.slice(0,20)}...</Card.Title>
+                                  <Card.Title>{items?.title.slice(0,20)}...</Card.Title>
                                   <div className='text-center mt-3 d-flex justify-content-between'>
-                                  <button onClick={()=>dispatch(removeWishlistItem(item?.id))} className='btn'><i className="fa-solid fa-heart-circle-xmark text-danger"></i></button>
-                                  <button className='btn'><i className="fa-solid fa-cart-plus text-success"></i></button>
+                                  <button onClick={()=>dispatch(removeWishlistItem(items?.id))} className='btn'><i className="fa-solid fa-heart-circle-xmark text-danger"></i></button>
+                                  <button onClick={()=>handleCartandRemove(items)} className='btn'><i className="fa-solid fa-cart-plus text-success"></i></button>
                                   </div>
                               </Card.Body>
                           </Card>
